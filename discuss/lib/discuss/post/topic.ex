@@ -8,9 +8,9 @@ defmodule Discuss.Post.Topic do
     timestamps()
   end
 
-  def changeset(topic, params \\ %{}) do
+  def changeset(topic, attrs) do
     topic
-    |> cast(params, [:title])
+    |> cast(attrs, [:title])
     |> validate_required([:title])
   end
 
