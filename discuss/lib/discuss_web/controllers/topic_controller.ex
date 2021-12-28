@@ -63,4 +63,84 @@ defmodule DiscussWeb.TopicController do
     end
   end
 
+
+  def edit(conn, %{"id" => topic_id}) do
+    topic = Post.get_topic(topic_id)
+    changeset = Post.change_topic(topic)
+
+    render(conn, "edit.html", topic: topic, changeset: changeset)
+  end
+
+  @doc """
+  "topic" => topic_params will give us updated topic
+  from 'put request'
+
+  But we still need to grab old topic from database with
+      Post.get_topic(topic_id)
+
+  Both old and new topic will be given to changeset through
+      Post.update_topic(old_topic, new_topic_plucked_from_params)
+  """
+  def update(conn, %{"id" => topic_id, "topic" => topic_params}) do
+    topic = Post.get_topic(topic_id)
+
+    case Post.update_topic(topic, topic_params) do
+      {:ok, _topic} ->
+        conn
+        |> put_flash(:info, "Topic updated successfully.")
+        |> redirect(to: Routes.topic_path(conn, :index))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "edit.html", topic: topic, changeset: changeset)
+    end
+  end
+
+  def delete(conn, %{"id" => topic_id}) do
+    topic = Post.get_topic!(topic_id)
+
+    {:ok, _topic} = Post.delete_topic(topic)
+
+    conn
+    |> put_flash(:info, "Topic deleted successfully.")
+    |> redirect(to: Routes.topic_path(conn, :index))
+  end
+
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
