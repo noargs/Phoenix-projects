@@ -7,7 +7,7 @@ defmodule PlateSlate.Repo.Migrations.CreateItems do
       add :description, :string
       add :price, :decimal, null: false
       add :added_on, :date, null: false, default: fragment("NOW()")
-      add :category_id, reference(:categories, on_delete: :nothing)
+      add :category_id, references(:categories, on_delete: :nothing)
 
       timestamps()
     end
