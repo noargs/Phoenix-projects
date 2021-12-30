@@ -1,11 +1,11 @@
-defmodule DiscussWeb.Router do
-  use DiscussWeb, :router
+defmodule PlateSlateWeb.Router do
+  use PlateSlateWeb, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {DiscussWeb.LayoutView, :root}
+    plug :put_root_layout, {PlateSlateWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -14,28 +14,14 @@ defmodule DiscussWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", DiscussWeb do
+  scope "/", PlateSlateWeb do
     pipe_through :browser
 
-#    get "/", TopicController, :index
-#    get "/topics/new", TopicController, :new
-#    post "/topics", TopicController, :create
-#    get "/topics/:id/edit", TopicController, :edit
-#    put "/topics/:id", TopicController, :update
-#    delete "/topics/:id", TopicController, :delete
-
-    resources "/", TopicController
-
+    get "/", PageController, :index
   end
 
-  scope "/auth", DiscussWeb do
-    pipe_through :browser
-
-    get "/:provider", AuthController, :request
-    get "/:provider/callback", AuthController, :callback
-  end
   # Other scopes may use custom stacks.
-  # scope "/api", DiscussWeb do
+  # scope "/api", PlateSlateWeb do
   #   pipe_through :api
   # end
 
@@ -51,7 +37,7 @@ defmodule DiscussWeb.Router do
 
     scope "/" do
       pipe_through :browser
-      live_dashboard "/dashboard", metrics: DiscussWeb.Telemetry
+      live_dashboard "/dashboard", metrics: PlateSlateWeb.Telemetry
     end
   end
 

@@ -56,6 +56,7 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/metrics" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/idna" />
     </content>
+    <orderEntry type="jdk" jdkName="Elixir 1.12.3" jdkType="Elixir SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="phoenix" level="project" />
     <orderEntry type="library" name="phoenix_ecto" level="project" />

@@ -7,15 +7,15 @@
 # General application configuration
 import Config
 
-config :discuss,
-  ecto_repos: [Discuss.Repo]
+config :plate_slate,
+  ecto_repos: [PlateSlate.Repo]
 
 # Configures the endpoint
-config :discuss, DiscussWeb.Endpoint,
+config :plate_slate, PlateSlateWeb.Endpoint,
   url: [host: "localhost"],
-  render_errors: [view: DiscussWeb.ErrorView, accepts: ~w(html json), layout: false],
-  pubsub_server: Discuss.PubSub,
-  live_view: [signing_salt: "ZEYVhTQP"]
+  render_errors: [view: PlateSlateWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: PlateSlate.PubSub,
+  live_view: [signing_salt: "ZhNVOUj7"]
 
 # Configures the mailer
 #
@@ -24,7 +24,7 @@ config :discuss, DiscussWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :discuss, Discuss.Mailer, adapter: Swoosh.Adapters.Local
+config :plate_slate, PlateSlate.Mailer, adapter: Swoosh.Adapters.Local
 
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, false
@@ -50,40 +50,3 @@ config :phoenix, :json_library, Jason
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
-
-config :ueberauth, Ueberauth,
-  providers: [
-    github: {Ueberauth.Strategy.Github, [default_scope: "user,user:email,public_repo"]}
-  ]
-
-config :ueberauth, Ueberauth.Strategy.Github.OAuth,
-  client_id: System.fetch_env!("GIT_CLIENT_ID"),
-  client_secret: System.fetch_env!("GIT_CLIENT_SECRET")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
