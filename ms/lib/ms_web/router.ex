@@ -7,6 +7,11 @@ defmodule MsWeb.Router do
 
   scope "/api", MsWeb do
     pipe_through :api
+
+    scope "/v1" do
+
+      resources "/products", ProductController
+    end
   end
 
   # Enables LiveDashboard only for development

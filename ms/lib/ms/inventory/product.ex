@@ -7,6 +7,7 @@ defmodule Ms.Inventory.Product do
     field :price, :float
     field :stock, :integer
     field :tax, :float
+#    field :details, :map
 
     timestamps()
   end

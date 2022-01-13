@@ -20,4 +20,19 @@ defmodule Ms.InventoryFixtures do
 
     product
   end
+
+  @doc """
+  Generate a brand.
+  """
+  def brand_fixture(attrs \\ %{}) do
+    {:ok, brand} =
+      attrs
+      |> Enum.into(%{
+        details: %{},
+        name: "some name"
+      })
+      |> Ms.Inventory.create_brand()
+
+    brand
+  end
 end
