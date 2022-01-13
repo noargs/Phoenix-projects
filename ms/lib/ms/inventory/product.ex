@@ -7,8 +7,8 @@ defmodule Ms.Inventory.Product do
     field :price, :float
     field :stock, :integer
     field :tax, :float
-#    field :details, :map
-
+    field :details, :map  # map in PostgreSQL is JSON a JSON field
+    belongs_to(:brand, Ms.Inventory.Brand) # Foreign key for brand
     timestamps()
   end
 
