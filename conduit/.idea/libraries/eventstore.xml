@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="eventstore" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/eventstore/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/eventstore/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/eventstore/lib" />
+      <root url="file://$PROJECT_DIR$/deps/eventstore/priv" />
+      <root url="file://$PROJECT_DIR$/deps/eventstore/lib" />
+      <root url="file://$PROJECT_DIR$/deps/eventstore/priv" />
+    </SOURCES>
+  </library>
+</component>

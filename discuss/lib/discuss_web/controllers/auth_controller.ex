@@ -18,6 +18,15 @@ defmodule DiscussWeb.AuthController do
 
   end
 
+  @doc """
+  Sign out But in restfull convention it calls delete
+  """
+  def delete(conn, _) do
+    conn
+    |> configure_session(drop: true)
+    |> redirect(to: Routes.topic_path(conn, :index))
+  end
+
   defp signin(conn, changeset) do
     case Accounts.authenticate_user(changeset) do
       {:ok, user} ->

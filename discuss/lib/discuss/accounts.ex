@@ -6,6 +6,10 @@ defmodule Discuss.Accounts do
   alias Discuss.Repo
   alias Discuss.Accounts.User
 
+  def get_user(id) do
+    Repo.get(User, id)
+  end
+
   def get_user_by(params) do
     Repo.get_by(User, params)
   end

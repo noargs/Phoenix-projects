@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="commanded_eventstore_adapter" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/commanded_eventstore_adapter/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/commanded_eventstore_adapter/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/commanded_eventstore_adapter/lib" />
+      <root url="file://$PROJECT_DIR$/deps/commanded_eventstore_adapter/lib" />
+    </SOURCES>
+  </library>
+</component>

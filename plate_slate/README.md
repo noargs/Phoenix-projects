@@ -1,4 +1,4 @@
-# PlateSlate
+# PlateSlate Graphql
 
 To start your Phoenix server:
 

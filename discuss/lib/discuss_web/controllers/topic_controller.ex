@@ -5,6 +5,7 @@ defmodule DiscussWeb.TopicController do
   alias Discuss.Post.Topic
 
   def index(conn, _params) do
+#    IO.inspect(conn.assigns)
     topics = Post.list_topics()
     render(conn, "index.html", topics: topics)
   end

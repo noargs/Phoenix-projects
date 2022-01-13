@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="commanded" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/commanded/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/commanded/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/commanded/lib" />
+      <root url="file://$PROJECT_DIR$/deps/commanded/lib" />
+    </SOURCES>
+  </library>
+</component>

@@ -21,6 +21,19 @@
         <a href="/" class="brand-logo">
           Discuss
         </a>
+        <ul class="right">
+          <%= if @current_user do %>
+            <li>
+              <%= link "Sign out",
+                       to: Routes.auth_path(@conn, :delete),
+                       method: "delete" %>
+            </li>
+          <% else %>
+            <li>
+              <%= link "Sign in with Github", to: Routes.auth_path(@conn, :request, "github") %>
+            </li>
+          <% end %>
+        </ul>
       </div>
     </nav>
     <%= @inner_content %>

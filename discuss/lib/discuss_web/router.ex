@@ -8,6 +8,7 @@ defmodule DiscussWeb.Router do
     plug :put_root_layout, {DiscussWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug DiscussWeb.Plugs.Auth
   end
 
   pipeline :api do
@@ -31,7 +32,8 @@ defmodule DiscussWeb.Router do
   scope "/auth", DiscussWeb do
     pipe_through :browser
 
-    get "/:provider", AuthController, :request
+    delete "/signout", AuthController, :delete
+    get "/:provider", AuthController, :request # :request is implemented and handle by ueberauth
     get "/:provider/callback", AuthController, :callback
   end
   # Other scopes may use custom stacks.
