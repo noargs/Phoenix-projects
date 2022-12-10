@@ -1,6 +1,7 @@
 defmodule PlateSlate.Menu.Item do
   use Ecto.Schema
   import Ecto.Changeset
+  alias PlateSlate.Menu.Item
 
   schema "items" do
     field :added_on, :date
@@ -17,7 +18,7 @@ defmodule PlateSlate.Menu.Item do
   end
 
   @doc false
-  def changeset(item, attrs) do
+  def changeset(%Item{} = item, attrs) do
     item
     |> cast(attrs, [:name, :description, :price, :added_on])
     |> validate_required([:name, :price])
