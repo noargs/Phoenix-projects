@@ -1,0 +1,14 @@
+<.header>New Article</.header>
+
+<.article_form changeset={@changeset} action={~p"/articles"} />
+
+<%!-- <.simple_form :let={f} for={@changeset} action={~p"/articles"}>
+  <.error :if={@changeset.action}> 
+    Opps, something went wrong! please check the error below 
+  </.error>
+  
+  <.input field={f[:title]} type="text" label="Title" />
+  <.input field={f[:body]} type="text" label="Body" />
+
+  <:actions> <.button> Save Article </.button> </:actions>
+</.simple_form> --%>

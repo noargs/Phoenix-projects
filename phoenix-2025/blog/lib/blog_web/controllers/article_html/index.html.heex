@@ -1,0 +1,13 @@
+<h1 class="text-lg text-brand">
+  Hello Phoenix
+</h1>
+
+<a href={~p"/articles/new"}> New Article </a>
+
+<ul class="pt-5">
+  <%= for article <- @articles do %>
+    <li>
+      <a href={~p"/articles/#{article}"}> <%= article.title %> </a>
+    </li>
+  <% end %>
+</ul>
