@@ -1,13 +1,24 @@
 defmodule ShopWeb.ProductController do
   use ShopWeb, :controller
 
-  def index(conn, _params) do
+  @products [
+    %{id: "1", name: "Street Fighter"},
+    %{id: "2", name: "Skyrim"},
+    %{id: "3", name: "Diablo 4"}
+  ]
 
-    render(conn, :index, layout: false)
+  def index(conn, _params) do
+    conn
+    |> assign(:products, @products)
+    |> render(:index)
   end
 
   def show(conn, %{"id" => id}) do
-    render(conn, :show, id: id)
+    product = Enum.find(@products, fn product -> product.id == id end)
+
+    conn
+    |> assign(:product, product)
+    |> render(:show)
   end
 
 end

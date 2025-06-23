@@ -1,1 +1,7 @@
-<h1>This is product page with ID = <%= @id %></h1>
+<%!-- <h1>This is product page for = <%= @product.name %></h1> --%>
+
+<%!-- <%= if(@product) do %>
+  <.product name={@product.name} />
+<% end %> --%>
+
+<.product :if={@product} name={@product.name} />

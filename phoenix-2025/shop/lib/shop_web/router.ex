@@ -1,10 +1,9 @@
 defmodule ShopWeb.Router do
   use ShopWeb, :router
-  alias ShopWeb.ProductController
   alias ShopWeb.Plugs
 
   pipeline :browser do
-    plug :accepts, ["html"]
+    plug :accepts, ["html", "json"]   # use `http://localhost:4000/products?_format=json` to query json
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, html: {ShopWeb.Layouts, :root}
@@ -21,7 +20,7 @@ defmodule ShopWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    get "/products", ProductController, :index
+    get "/products", ProductController, :index  # use `http://localhost:4000/products?_format=json` to query json
     get "/products/:id", ProductController, :show
   end
 

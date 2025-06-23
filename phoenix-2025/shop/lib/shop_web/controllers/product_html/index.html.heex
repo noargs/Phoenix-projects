@@ -1,9 +1,14 @@
-<h1>From the Heex</h1>
+<%!-- <h1>From the Heex</h1> --%>
 
 <%!-- <p class="mt-8">Selected console: <%= @console %></p> --%>
 
+<%!-- <a href={~p"/?#{[console: "xbox", promo: "secret-code"]}"}>Go back to home page </a>
+<p>This is full URL: <%= url(~p"/products") %></p> --%>
+
 <p :if={@promo}> You have a promotional code! </p>
 
-<a href={~p"/?#{[console: "xbox", promo: "secret-code"]}"}>Go back to home page </a>
+<%!-- <%= for product <- @products do %>
+  <.product name={product.name} />
+<% end %> --%>
 
-<p>This is full URL: <%= url(~p"/products") %></p>
+<.product :for={product <- @products} name={product.name} />
