@@ -1,0 +1,14 @@
+<div class="py-2">
+    <p>
+        <strong>Commenter:</strong>
+        <%= @comment.commenter %>
+    </p>
+    <p>
+        <strong>Comment:</strong>
+        <%= @comment.body %>
+    </p>
+</div>
+
+<.link href={~p"/articles/#{@comment.article_id}/comments/#{@comment.id}"} method="delete" data-confirm="Are you sure?">
+Delete Comment
+</.link>

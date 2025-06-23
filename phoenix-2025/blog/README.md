@@ -220,8 +220,188 @@ change route `ArticleController`'s **get** into **resources**
    
 Run `mix phx.routes` to check your routes    
    
-     
+# Adding a second context (model)    
+    
+```bash
+ $ mix phx.gen.context MyBlog Comment comments commenter:string body:text article_id:references:articles
+```     
+    
+**Fix Comments' migration to `delete_all` after Article deleted**     
 
+```elixir
+# change the line in `priv/migrations/20250620045822_create_comments`
+def change do
+    create table(:comments) do
+      add :commenter, :string
+      add :body, :text
+      add :article_id, references(:articles, on_delete: :delete_all)
+```      
+      
+**Run `$ mix ecto.migrate`**       
+    
+## Create relationship (Associating models Comment and Article)      
+create relationship of Comments (`belongs_to` an Article) and Article (`has_many` Comments)        
+     
+### Comment *belongs_to* an Article
+     
+```elixir
+# change the line in `lib/blog/my_blog/comment.ex`
+defmodule Blog.MyBlog.Comment do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  schema "comments" do
+    field :body, :string
+    field :commenter, :string
+    belongs_to :article, Blog.MyBlog.Article
+
+    timestamps(type: :utc_datetime)
+  end
+
+  @doc false
+  def changeset(comment, attrs) do
+    comment
+    |> cast(attrs, [:commenter, :body, :article_id])
+    |> validate_required([:commenter, :body])
+    |> assoc_constraint(:article)
+  end
+end
+```   
+   
+### Article *has_many* Comments   
+```elixir   
+defmodule Blog.MyBlog.Article do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  schema "articles" do
+    field :title, :string
+    field :body, :string
+    has_many :comments, Blog.MyBlog.Comment
+
+    timestamps(type: :utc_datetime)
+  end
+
+  @doc false
+  def changeset(article, attrs) do
+    article
+    |> cast(attrs, [:title, :body])
+    |> validate_required([:title, :body])
+    |> validate_length(:body, min: 10)
+  end
+end    
+```    
+    
+### Ecto; Insert Article and Comment into database    
+
+```bash
+iex(1)> alias Blog.MyBlog.Article
+Blog.MyBlog.Article
+
+iex(2)> article = %Article{title: "Comment belongs_to Article and Article has_many Comments", body: "Has many comments"}
+%Blog.MyBlog.Article{
+  __meta__: #Ecto.Schema.Metadata<:built, "articles">,
+  id: nil,
+  title: "Comment belongs_to Article and Article has_many Comments",
+  body: "Has many comments",
+  comments: #Ecto.Association.NotLoaded<association :comments is not loaded>,
+  inserted_at: nil,
+  updated_at: nil
+}
+
+iex(3)> alias Blog.Repo
+Blog.Repo
+
+iex(4)> article = Repo.insert!(article)
+[debug] QUERY OK source="articles" db=6.4ms decode=1.3ms queue=2.9ms idle=607.8ms
+INSERT INTO "articles" ("title","body","inserted_at","updated_at") VALUES ($1,$2,$3,$4) RETURNING "id" ["Comment belongs_to Article and Article has_many Comments", "Has many comments", ~U[2025-06-20 05:11:51Z], ~U[2025-06-20 05:11:51Z]]
+↳ :elixir.eval_external_handler/3, at: src/elixir.erl:386
+%Blog.MyBlog.Article{
+  __meta__: #Ecto.Schema.Metadata<:loaded, "articles">,
+  id: 3,
+  title: "Comment belongs_to Article and Article has_many Comments",
+  body: "Has many comments",
+  comments: #Ecto.Association.NotLoaded<association :comments is not loaded>,
+  inserted_at: ~U[2025-06-20 05:11:51Z],
+  updated_at: ~U[2025-06-20 05:11:51Z]
+}
+
+iex(5)> comment = Ecto.build_assoc(article, :comments, %{commenter: "First commenter", body: "Sweet article"})
+%Blog.MyBlog.Comment{
+  __meta__: #Ecto.Schema.Metadata<:built, "comments">,
+  id: nil,
+  body: "Sweet article",
+  commenter: "First commenter",
+  article_id: 3,
+  article: #Ecto.Association.NotLoaded<association :article is not loaded>,
+  inserted_at: nil,
+  updated_at: nil
+}
+
+iex(6)> Repo.insert!(comment)
+[debug] QUERY OK source="comments" db=4.1ms queue=1.0ms idle=1138.5ms
+INSERT INTO "comments" ("body","commenter","article_id","inserted_at","updated_at") VALUES ($1,$2,$3,$4,$5) RETURNING "id" ["Sweet article", "First commenter", 3, ~U[2025-06-20 05:26:41Z], ~U[2025-06-20 05:26:41Z]]
+↳ :elixir.eval_external_handler/3, at: src/elixir.erl:386
+%Blog.MyBlog.Comment{
+  __meta__: #Ecto.Schema.Metadata<:loaded, "comments">,
+  id: 1,
+  body: "Sweet article",
+  commenter: "First commenter",
+  article_id: 3,
+  article: #Ecto.Association.NotLoaded<association :article is not loaded>,
+  inserted_at: ~U[2025-06-20 05:26:41Z],
+  updated_at: ~U[2025-06-20 05:26:41Z]
+}
+iex(7)>
+```   
+     
+### Ecto; Read Article and Comment from database    
+
+```bash
+iex(7)> Repo.get(Article, article.id) |> Repo.preload(:comments)
+[debug] QUERY OK source="articles" db=0.4ms queue=0.4ms idle=1317.8ms
+SELECT a0."id", a0."title", a0."body", a0."inserted_at", a0."updated_at" FROM "articles" AS a0 WHERE (a0."id" = $1) [3]
+↳ :elixir.eval_external_handler/3, at: src/elixir.erl:386
+[debug] QUERY OK source="comments" db=1.9ms queue=1.4ms idle=308.6ms
+SELECT c0."id", c0."body", c0."commenter", c0."article_id", c0."inserted_at", c0."updated_at", c0."article_id" FROM "comments" AS c0 WHERE (c0."article_id" = $1) ORDER BY c0."article_id" [3]
+↳ :elixir.eval_external_handler/3, at: src/elixir.erl:386
+%Blog.MyBlog.Article{
+  __meta__: #Ecto.Schema.Metadata<:loaded, "articles">,
+  id: 3,
+  title: "Comment belongs_to Article and Article has_many Comments",
+  body: "Has many comments",
+  comments: [
+    %Blog.MyBlog.Comment{
+      __meta__: #Ecto.Schema.Metadata<:loaded, "comments">,
+      id: 1,
+      body: "Sweet article",
+      commenter: "First commenter",
+      article_id: 3,
+      article: #Ecto.Association.NotLoaded<association :article is not loaded>,
+      inserted_at: ~U[2025-06-20 05:26:41Z],
+      updated_at: ~U[2025-06-20 05:26:41Z]
+    }
+  ],
+  inserted_at: ~U[2025-06-20 05:11:51Z],
+  updated_at: ~U[2025-06-20 05:11:51Z]
+}
+iex(8)>
+```     
+
+## Adding a route for Comments    
+
+```elixir
+# change the `lib/blog_web/router.ex`
+scope "/", BlogWeb do
+  pipe_through :browser
+
+  get "/", PageController, :home
+  get "/articles", ArticleController, :index
+  resources "/articles", ArticleController do
+    resources "/comments", CommentController
+  end
+end
+```        
 
 To start your Phoenix server:
 

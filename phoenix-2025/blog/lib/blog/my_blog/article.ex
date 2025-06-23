@@ -5,6 +5,7 @@ defmodule Blog.MyBlog.Article do
   schema "articles" do
     field :title, :string
     field :body, :string
+    has_many :comments, Blog.MyBlog.Comment
 
     timestamps(type: :utc_datetime)
   end

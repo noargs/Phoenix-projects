@@ -14,3 +14,14 @@
         </.link>
     </li>
 </ul>
+
+<h2 class="text-md text-brand">
+    Comments
+</h2>
+<%= for comment <- @article.comments do %>
+    <._comment comment={comment} />
+<% end %>
+
+<p>
+    <._form comment_changeset={@comment_changeset} article={@article} />
+</p>
