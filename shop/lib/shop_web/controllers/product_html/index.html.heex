@@ -1,0 +1,9 @@
+<h1>From the Heex</h1>
+
+<%!-- <p class="mt-8">Selected console: <%= @console %></p> --%>
+
+<p :if={@promo}> You have a promotional code! </p>
+
+<a href={~p"/?#{[console: "xbox", promo: "secret-code"]}"}>Go back to home page </a>
+
+<p>This is full URL: <%= url(~p"/products") %></p>
