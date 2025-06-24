@@ -2,7 +2,15 @@
 
 ```bash
 $ mix phx.gen.schema Product products name:string slug:string:unique console:enum:pc:xbox:nintendo:playstation
-```
+```.  
+    
+```bash
+$ mix phx.gen.context Consoles Console consoles name:string price:integer 
+```    
+    
+```bash
+$ mix phx.gen.html Promotions Promotion promotions name:string code:string:unique expires_at:utc_datetime
+```    
 
 To start your Phoenix server:
 

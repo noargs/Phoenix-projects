@@ -1,0 +1,17 @@
+<.header>
+  Promotion {@promotion.id}
+  <:subtitle>This is a promotion record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/promotions/#{@promotion}/edit"}>
+      <.button>Edit promotion</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name">{@promotion.name}</:item>
+  <:item title="Code">{@promotion.code}</:item>
+  <:item title="Expires at">{@promotion.expires_at}</:item>
+</.list>
+
+<.back navigate={~p"/promotions"}>Back to promotions</.back>
