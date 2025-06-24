@@ -4,4 +4,12 @@
   <.product name={@product.name} />
 <% end %> --%>
 
-<.product :if={@product} name={@product.name} />
+<p>ID: {@product.id}</p>
+<p>Name: {@product.name}</p>
+<%!-- <.product :if={@product} product={@product} /> --%>
+
+<%!-- <.button>
+  Click me!
+</.button> --%>
+
+<.back navigate={~p"/products"}>Back to product listing </.back>

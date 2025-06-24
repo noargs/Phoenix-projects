@@ -21,7 +21,7 @@ defmodule ShopWeb.Router do
 
     get "/", PageController, :home
     get "/products", ProductController, :index  # use `http://localhost:4000/products?_format=json` to query json
-    get "/products/:id", ProductController, :show
+    get "/products/:slug", ProductController, :show
   end
 
   # Other scopes may use custom stacks.

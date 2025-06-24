@@ -1,4 +1,8 @@
-# Shop
+## Shop
+
+```bash
+$ mix phx.gen.schema Product products name:string slug:string:unique console:enum:pc:xbox:nintendo:playstation
+```
 
 To start your Phoenix server:
 
