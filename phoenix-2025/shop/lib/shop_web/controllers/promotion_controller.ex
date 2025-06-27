@@ -14,6 +14,14 @@ defmodule ShopWeb.PromotionController do
     render(conn, :new, changeset: changeset)
   end
 
+  @doc """
+  {
+    "promotions": {
+      "name": "Winter Sale",
+      "code": "SNOW35"
+    }
+  }
+  """
   def create(conn, %{"promotion" => promotion_params}) do
     case Promotions.create_promotion(promotion_params) do
       {:ok, promotion} ->

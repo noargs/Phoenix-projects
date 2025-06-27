@@ -23,15 +23,19 @@ defmodule ShopWeb.Router do
     get "/products", ProductController, :index  # use `http://localhost:4000/products?_format=json` to query json
     get "/products/:slug", ProductController, :show
 
-    resources "/promotions", PromotionController
+    # resources "/promotions", PromotionController
+
+    live "/products-live", ProductLive.Index
   end
 
   # Other scopes may use custom stacks.
-  scope "/api", ShopWeb do
-    pipe_through :api
+  # scope "/api", ShopWeb do
+  #   pipe_through :api
 
-    get "/products", ApiController, :index
-  end
+  #   get "/products", ApiController, :index
+
+  #   resources "/promotions", PromotionController, except: [:new, :edit]
+  # end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:shop, :dev_routes) do
