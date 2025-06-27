@@ -7,9 +7,17 @@ $ mix deps.get
 
 $ mix phx.gen.auth Accounts User users  # press `Y` for `Do you want to create a LiveView based authentication system?` 
 
+# Go to `http://localhost:4000/dev/mailbox` and confirm your email by clicking the given link in that page
+
 $ mix ecto.setup   # its a collection of two commands `mix ecto.create` and `mix ecto.migrate`
 
-$ mix phx.gen.context Gists Gist gists user_id:references:users name:string description:text markup_text:text
+$ mix phx.gen.context Gists Gist gists user_id:references:users name:string description:text markup_text:text    
+
+$ mix phx.gen.context Gists SavedGist savedgists user_id:references:users gist_id:references:gists  
+
+$ mix phx.gen.context Comments Comment comments user_id:references:users gist_id:references:gists markup_text:text
+
+$ mix ecto.migrate
 ```    
      
 ### Recover Postgres Docker passowrd      
