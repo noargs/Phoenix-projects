@@ -105,6 +105,8 @@ scope "/" do
 end
 ```     
     
+## Run GraphiQL    
+    
 Run `mix phx.server` and visit `http://localhost:4000/graphiql`.  
 
 Now you can write following (you can also ommit keyword `query` by default it is understood).  
@@ -116,7 +118,11 @@ query {
     name
   }
 }
-```          
+```         
+
+## Run Test.   
+
+`$ mix test test/plate_slate_web/schema/query/menu_items_test.exs`       
     
     
 

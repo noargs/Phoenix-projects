@@ -17,5 +17,4 @@ defmodule PlateSlate.Menu.Category do
     |> cast(attrs, [:description, :name])
     |> validate_required([:name])
   end
-
 end

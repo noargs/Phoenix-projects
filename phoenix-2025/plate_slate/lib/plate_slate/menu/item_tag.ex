@@ -17,5 +17,4 @@ defmodule PlateSlate.Menu.ItemTag do
     |> cast(attrs, [:name, :description])
     |> validate_required([:name])
   end
-
 end
