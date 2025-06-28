@@ -1,18 +1,25 @@
-### PlateSlate Graphql  
+### PlateSlate.  
     
-<img src="../img/graphql_overview.png" alt="Graphql request response overview">   
+ ```bash
+$ mix phx.new plate_slate --no-install --adapter cowboy
+ ```   
 
-GraphQL schemas are more than just structural metadata and actually define behavior, they’re the API implementation itself.    
+ ### Dependencies added 
+```elixir
+
+```
+
+<img src="../../img/graphql_overview.png" alt="Graphql request response overview">    
+    
+ GraphQL schemas are more than just structural metadata and actually define behavior, they’re the API implementation itself.    
     
 * Install dependencies with `mix deps.get`
-* Create and migrate your database with `mix ecto.setup`           
-     
-
-
+* Create and migrate your database with `mix ecto.setup`      
+    
+       
 To start your Phoenix server:
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
+  * Run `mix setup` to install and setup dependencies
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
