@@ -20,6 +20,17 @@ defmodule PlateSlateWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/" do
+    pipe_through :api
+
+    forward "/api", Absinthe.Plug,
+      schema: PlateSlateWeb.Schema
+
+    forward "/graphiql", Absinthe.Plug.GraphiQL,
+      schema: PlateSlateWeb.Schema,
+      interface: :simple
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", PlateSlateWeb do
   #   pipe_through :api
