@@ -1,4 +1,9 @@
-### PlateSlate.  
+### PlateSlate.     
+    
+- Asking Graphql server to provide information calls `query`.
+- Persisting a change to data is called `mutation`
+- Requesting live feed of data is `subscription`    
+
     
  ```bash
 $ mix phx.new plate_slate --no-install --adapter cowboy
@@ -72,7 +77,7 @@ Our `:menu_items` field in `lib/plate_slate_web/schema.ex` doesn't actually buil
   end
 ```   
    
-You don't need to definee a resolver function for every field. For example, this query will attempt to resolve a menu item’s `:name` field:  
+You don't need to define a resolver function for every field. For example, this query will attempt to resolve a menu item’s `:name` field:  
 ```graphql
 {
   menuItems {
@@ -124,6 +129,21 @@ query {
 
 `$ mix test test/plate_slate_web/schema/query/menu_items_test.exs`       
     
+## Test variables 
+
+```grapql
+query ($term: String) {
+  menuItems(matching: $term) {
+    name
+  }
+}
+```    
+- give variable value like following.   
+    
+```json
+{"term": "reu"}
+```    
+
     
 
 
