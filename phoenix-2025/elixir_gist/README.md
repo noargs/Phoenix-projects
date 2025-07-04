@@ -166,6 +166,11 @@ And now add font into `assets/css/app.css`
     <button class="img-down-arrow" type="button" id="user-menu-button">
       <img src="/images/user-image.svg" alt="Profile Image" class="round-image-padding w-8 h-8" />
     </button>
+    <div 
+      id="dropdown_menu" 
+      class="absolute right-0 mt-2 py-2 w-48 bg-emDark rounded-lg shadow-xl border border-white"
+    >
+    </div>
   </div>
 </header>
 ```    
