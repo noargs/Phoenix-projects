@@ -7,6 +7,8 @@ defmodule ProductsWeb.Router do
 
   scope "/api", ProductsWeb do
     pipe_through :api
+
+    resources "/suppliers", SupplierController, except: [:new, :edit]
   end
 
   # Enable LiveDashboard in development
