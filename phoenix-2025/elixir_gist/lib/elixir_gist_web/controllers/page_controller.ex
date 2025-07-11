@@ -5,6 +5,7 @@ defmodule ElixirGistWeb.PageController do
     # The home page is often custom made,
     # so skip the default app layout.
     # render(conn, :home, layout: false) # Dont load `app.html.heex` only `home.html.heex`
-    render(conn, :home)
+    # render(conn, :home)
+    redirect(conn, to: "/create")
   end
 end
