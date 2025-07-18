@@ -12,6 +12,6 @@ defmodule Products.Repo.Migrations.CreateSuppliers do
     end
 
     create unique_index(:suppliers, [:tin])
-    create unique_index(:suppliers, [:name])
+    create unique_index(:suppliers, ["LOWER(name)"], name: :suppliers_name_index)
   end
 end

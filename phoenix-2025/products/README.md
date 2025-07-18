@@ -44,6 +44,12 @@ Add the resource to the  `/api` scope in `lib/products_web/router.ex`
 ```bash
 $ mix ecto.migrate
 ```    
+    
+```bash
+$ mix ecto.gen.migration SupplierLegalName
+```    
+    
+    
 
 
 To start your Phoenix server:
