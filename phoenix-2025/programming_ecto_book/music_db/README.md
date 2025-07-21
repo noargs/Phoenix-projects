@@ -1,6 +1,6 @@
-## MusicDb     
+## MusicDB     
     
-MusicDb app contains four tables, `artists`, `albums`, `tracks`, and `generes`    
+MusicDB app contains four tables, `artists`, `albums`, `tracks`, and `generes`    
     
 **Association between tables**    
 - Artist <ins>has_many</ins> Albums    
@@ -36,6 +36,8 @@ $ mix ecto.migrate
 
 $ mix run priv/repo/seeds.ex
 ```    
+    
+> Run `mix ecto.reset` if come across any error related to database    
 
 To start your Phoenix server:
 
