@@ -1,12 +1,12 @@
-defmodule MusicDbWeb do
+defmodule MusicDBWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, components, channels, and so on.
 
   This can be used in your application as:
 
-      use MusicDbWeb, :controller
-      use MusicDbWeb, :html
+      use MusicDBWeb, :controller
+      use MusicDBWeb, :html
 
   The definitions below will be executed for every controller,
   component, etc, so keep them short and clean, focused
@@ -39,7 +39,7 @@ defmodule MusicDbWeb do
     quote do
       use Phoenix.Controller,
         formats: [:html, :json],
-        layouts: [html: MusicDbWeb.Layouts]
+        layouts: [html: MusicDBWeb.Layouts]
 
       import Plug.Conn
 
@@ -50,9 +50,9 @@ defmodule MusicDbWeb do
   def verified_routes do
     quote do
       use Phoenix.VerifiedRoutes,
-        endpoint: MusicDbWeb.Endpoint,
-        router: MusicDbWeb.Router,
-        statics: MusicDbWeb.static_paths()
+        endpoint: MusicDBWeb.Endpoint,
+        router: MusicDBWeb.Router,
+        statics: MusicDBWeb.static_paths()
     end
   end
 

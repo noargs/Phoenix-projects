@@ -8,18 +8,18 @@
 import Config
 
 config :music_db,
-  ecto_repos: [MusicDb.Repo],
+  ecto_repos: [MusicDB.Repo],
   generators: [timestamp_type: :utc_datetime]
 
 # Configures the endpoint
-config :music_db, MusicDbWeb.Endpoint,
+config :music_db, MusicDBWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [json: MusicDbWeb.ErrorJSON],
+    formats: [json: MusicDBWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: MusicDb.PubSub,
+  pubsub_server: MusicDB.PubSub,
   live_view: [signing_salt: "zR4JshjC"]
 
 # Configures Elixir's Logger

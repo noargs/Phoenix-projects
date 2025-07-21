@@ -1,4 +1,4 @@
-defmodule MusicDbWeb.Endpoint do
+defmodule MusicDBWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :music_db
 
   # The session will be stored in the cookie and signed,
@@ -23,7 +23,7 @@ defmodule MusicDbWeb.Endpoint do
     at: "/",
     from: :music_db,
     gzip: false,
-    only: MusicDbWeb.static_paths()
+    only: MusicDBWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -43,5 +43,5 @@ defmodule MusicDbWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug MusicDbWeb.Router
+  plug MusicDBWeb.Router
 end

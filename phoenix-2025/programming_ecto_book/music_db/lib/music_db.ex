@@ -1,4 +1,4 @@
-defmodule MusicDb do
+defmodule MusicDB do
   @moduledoc """
   MusicDb keeps the contexts that define your domain
   and business logic.

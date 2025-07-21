@@ -1,4 +1,4 @@
-defmodule MusicDbWeb.Telemetry do
+defmodule MusicDBWeb.Telemetry do
   use Supervisor
   import Telemetry.Metrics
 
@@ -87,7 +87,7 @@ defmodule MusicDbWeb.Telemetry do
     [
       # A module, function and arguments to be invoked periodically.
       # This function must call :telemetry.execute/3 and a metric must be added above.
-      # {MusicDbWeb, :count_users, []}
+      # {MusicDBWeb, :count_users, []}
     ]
   end
 end
