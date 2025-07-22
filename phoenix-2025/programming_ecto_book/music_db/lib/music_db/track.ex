@@ -6,11 +6,11 @@ defmodule MusicDB.Track do
     field :title, :string
     field :duration, :integer
     field :number_of_plays, :integer
+    timestamps()
 
     belongs_to :album, MusicDB.Album
     field :duration_string, :string, virtual: true
 
-    timestamps()
   end
 
 end

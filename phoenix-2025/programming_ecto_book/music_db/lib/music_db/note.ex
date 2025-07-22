@@ -5,7 +5,6 @@ defmodule MusicDB.Note do
   schema "notes_with_fk_fields" do
     field :note, :string
     field :author, :string
-
     timestamps()
 
     belongs_to :artist, MusicDB.Artist

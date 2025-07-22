@@ -4,7 +4,6 @@ defmodule MusicDB.Genre do
   schema "genres" do
     field :name, :string
     field :wiki_tag, :string
-
     timestamps()
 
     many_to_many :albums, MusicDB.Album, join_through: "albums_genres"
