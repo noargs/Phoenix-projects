@@ -38,6 +38,48 @@ $ mix run priv/repo/seeds.ex
 ```    
     
 > Run `mix ecto.reset` if come across any error related to database    
+> Any code which is unable to write in IEx shell, you can write in `priv/repo/playground.exs` and run `mix run priv/repo/playground.exs` to get the result.    
+     
+### Data Model of this App     
+- artits    
+- albums    
+- tracks   
+- genres     
+
+**Association**      
+- an `artist` can have many `albums` (one-to-many / has many) 
+- an `album` can have many `tracks` (one-to-many / has many)    
+- `albums` have a <ins>many-to-many</ins> relationship with `genres`           
+      
+### Repository pattern    
+Ecto follows the Repository pattern. All communication to and fro with the database happens through module name `Repo`. This is called Repository pattern. The main characteristics of this pattern is the presence of a single module or class, called the Repository (`Repo`), through which all the communication with the database passes.      
+      
+> If you are using `_all` (i.e. `insert_all` or `update_all` etc) functions then you may get an error of **null value in column "updated_at"/"inserted_at"**. Hence you have to provide the timestamp for both `inserted_at` and `updated_at`. (You can also provide multiple values via List instead of maps as shown below)
+```elixir
+Repo.insert_all(Post, %{
+  title: "My post", 
+  inserted_at: DateTime.utc_now(),
+  updated_at: DateTime.utc_now()
+})
+
+Repo.insert_all(Post, [
+  title: "My post", 
+  inserted_at: DateTime.utc_now(),
+  updated_at: DateTime.utc_now()
+])
+```      
+     
+### SQL vanilla query    
+To use SQL Vanilla Query as follows:
+```elixir
+Ecto.Adapters.SQL.query(Repo, "select * from posts")
+```     
+    
+Ecto also makes the function available through Repo as follows:   
+```elixir
+Repo.query("select * from posts")
+```    
+      
 
 To start your Phoenix server:
 
