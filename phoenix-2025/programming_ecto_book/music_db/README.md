@@ -770,6 +770,110 @@ Now, we can refer to an artist's `%Track{}` records directly from the `%Artist{}
 
 > [!IMPORTANT]   
 > **belongs_to** is not supported for nested association.      
+     
+### Many-to-Many Associations    
+These relationships are not as straightforward as belongs-to relationships because you need an extra table to implement them.     
+    
+Example is genre and albums. Each album has many genre and each genre has many albums.      
+    
+Traditional way to model this relationship is to create extra table that maps the relationships between the two other tables. This is called a **join table** and look something like this:    
+<img src="./images/many-to-many.png" alt="many to many relationship diagram">    
+
+Here, the `albums_genres` table exists solely to hold the associations between albums and genres. It creates the link by holding two foreign keys, one for each table.   
+Setting up the association is similar to setting up a `has_many through:` association. The critical component is the `join_through` option.
+```elixir
+schema "albums" do
+  
+  many_to_many :genres, MusicDB.Genre, join_though: MusicDB.AlbumGenre
+end
+
+schema "genres" do
+
+  many_to_many :albums, MusicDB.Album, join_though: MusicDB.AlbumGenre
+end
+
+schema "albums_genres" do
+
+  belongs_to :albums, MusicDB.Album
+  belongs_to :genres, MusicDB.Genre
+end
+```   
+Once this sets up, `albums` and `genres` can refer to each other without going through the `albums_genres` schema.    
+   
+> It is possible to tighten it up further. As <ins>we don't need to create schema</ins> for `albums_genres` table for many-to-many association to work.   
+> We <ins>just need to create a table for `albums_genres`</ins> and refer to the table name in the `join_though` option    
+> **Many-to-many can also be used for polymorphic associations**. 
+   
+```elixir
+schema "albums" do
+  
+  many_to_many :genres, MusicDB.Genre, join_though: MusicDB.AlbumGenre
+end
+
+schema "genres" do
+
+  many_to_many :albums, MusicDB.Album, join_though: MusicDB.AlbumGenre
+end
+```   
+   
+If you are planning to use any other fields (timestamps, or metadata etc.) beside foreign keys in your join table. Then you have to create the schema like we did previously and map the fields you are interested in:    
+```elixir
+schema "albums_genres" do
+  field :meta_data, :map
+
+  belongs_to :albums, MusicDB.Album
+  belongs_to :genres, MusicDB.Genre
+end
+```   
+    
+### Working with Associations    
+If we want to get tracks for particular album, you may incline to do the following:    
+```elixir
+album = Repo.get_by(Album, title: "Kind Of Blue")
+
+album.tracks
+#Ecto.Association.NotLoaded<association :tracks is not loaded>
+```    
+This feature is called **lazy loading** which often database libraries do. Libraries checks to see if the associated records have been loaded, when you try to refer to them. To fetch the associated records by default, by the library, can lead to performance problems as the database grows. Hence you have to explicitly load the association.   
+This is also called **N+1** Query problem. Because you need **1** query to fetch the parent record (i.e. `albums`) and **N** more queries to fetch the child records (i.e. `tracks`).  
+   
+Ecto provides you the option for loading associated records by adding `preload` option in your query.   
+``` elixir
+albums = Repo.all(from a in Album, preload: :tracks)
+
+# if you already loaded parent records and want to fetch the associations
+albums = 
+  Album
+  |> Repo.all
+  |> Repo.preload(:tracks)
+```   
+In both cases as shown above, you get all the album records having its associated tracks. And both cases, <ins>only two database queries</ins> are executed: **1** to fetch all the albums and **2** to fetch all the tracks.   
+    
+> The `preload` statements can handle the nested associations using keyword list syntax and you would get a rather large dataset
+```elixir
+Repo.all(from a in Artist, preload: [albums: :tracks])
+```    
+   
+If you want to grab parent records and child records together in <ins>one query</ins>, you can use `preload` in combination with `join`. **This approach reduces the number of queries sent to the database**. But increase the amount of data that is sent back:    
+```elixir
+q = from a in Album,
+  join: t in assoc(a, :tracks),
+  where: t.title == "Freddie Freeloader",
+  preload: [tracks: t]
+```   
+The use of `Ecto.assoc/2` function is to specify that we want to `join` on the `:tracks`, association we defined in our Album schema. By adding the reference to the *query binding* t in the `preload` option, we’re telling Ecto to load the album and track records in the same query.    
+
+### Optimising Associations with Embedded Schemas     
+Although Ecto protect us against N+1 queries, where our code is make huge number of queries even in simple operations. Even then fetching associated records always requires an extra round-trip to database. There may be situation you want to avoid it. In case, you always want your associated records to load along with parents. Or optimise the speed in preformance-critical situations. In those cases Ecto provides **embedded schemas**.   
+In embedded schemas, associated records are stored in a single database column along with the rest of the parent record's values. When you load the parent record, the child records come right along with it. The implementation is database dependent.    
+- As in **PostgreSQL**, Ecto uses <ins>jsonb</ins> column type to store the records as an array of key/value pairs      
+- and in **MySQL**, Ecto converts the records into <ins>JSON string</ins> and stores them as a text.     
+Therefore the end result is the same: the embedded records are loaded into the appropriate Elixir structs and available ins a single query without having to call `preload`.  
+
+### Deleting records with Associations    
+What should happen to child records (tracks) when a parent record (albums) is deleted? Ecto provide `on_delete:` however the exact implementation vary on the database.     
+> `has_many`, `has_one`, and `many_to_many` functions all support `on_delete` options and `on_delete` can have one of three options. `:nothing`, `:nilify_all` (all child records will have parent record's foreign key to null), and `:delete_all` (delete all of the child records along with the parent record)
+    
 
 
 
