@@ -588,6 +588,9 @@ from(t in "tracks", where: t.title == "Autum Leaves")
 |> Repo.delete_all
 ```    
     
+> [!IMPORTANT]
+> insert_all and delete_all functions for inserting and deleting data provided by Ecto so we can perform these actions **without schemas**.    
+    
 > Look at the documentation of `Ecto.Query` module to see all the <ins>keywords</ins> available and `Ecto.Query.API` to see all the <ins>utility function</ins> availables.       
     
 > **Limitation** of `Ecto.Query` API is **1.** using `select` clause. if we are using the same data type often which most apps do, this could get old in a hurry **2.**  Also we have to typecast dynamic values `where: [id: type(^artist_id, :integer)],` in our queries. Fortuntely Schema can help us with both of these problems.    
@@ -647,8 +650,128 @@ This uses the `:id` type to indicate that it is an integer-based primary key. We
 The `naive_datetime` type is a datetime value that has no associated time zone information.    
 If you use `utc_datetime` the value must be a DateTime struct with its time zone set to UTC.  
 To create your own type you can read the [Ecto.Type](https://hexdocs.pm/ecto/Ecto.Type.html)    
+
+As we previously saw in the example of `artist_id = "1"`. Where we had to typecast string into integet in where clause:    
+```elixir
+artist_id = "1"
+  q = from "artists", where: [id: type(^artist_id, :integer)],
+  select: [:name]
+Repo.all(q)
+#=> [%{name: "Miles Davis"}]
+```       
+And we also had to use `select:` caluse to specify the columns we needed in the result.   
+**Schema can help us with both of these issues.** as it automatically typecast as well as return all the columns without using select caluse as follows:   
+```elixir
+alias MusicDB.Track
+track_id = "1"
+q = from Track, where: [id: ^track_id]
+```
+The return result using schema will be `%Track{}` struct instead of getting back the list or map.   
+We can still use `select:` option however any fields we didn't specify in the *select* will be set to *nil*    
     
-       
+### Inserting with Schemas     
+```elixir
+Repo.insert_all("artists", [[name: "John Coltrane"]])
+#=> {1, nil}
+
+Repo.insert(%Artist{name: "John Coltrane"})
+#=> {:ok, %MusicDB.Artist{__meta__: #Ecto.Schema.Metadata<:loaded, "artists">,
+#=> id: 4, name: "John Coltrane", ...} 
+
+Repo.insert_all(Artist, [[name: "John Coltrane"]])
+#=> {1, nil}
+```  
+    
+### Deleting with Schemas     
+```elixir
+Repo.delete_all("tracks")
+
+from(t in "tracks", where: t.title == "Autum Leaves")
+|> Repo.delete_all
+
+track = Repo.get_by(Track, title: "The Moontrane")
+Repo.delete(track)
+#=> {:ok, %MusicDB.Track{__meta__: #Ecto.Schema.Metadata<:deleted, "tracks">,
+#=> id: 28, title: "The Moontrane", ...}
+```    
+    
+### Updating with Schemas     
+Just like `Repo.insert` and `Repo.delete`, **There's also `Repo.update` function available However it uses changeset rather than schema structs to perform update** In fact the `insert` and `delete` functions <ins>returns changeset if the operation fails</ins>    
+
+## Associations     
+In Ecto we use associations to model the relationships between table. (i.e. one-to-many, one-to-one, belongs-to, many-to-many)    
+
+### One-to-Many and One-to-One Association     
+```elixir
+schema "albums" do
+  field :title, :string
+  field :release_data, :date
+
+  has_many :tracks, MusicDB.Track
+end
+```    
+`has_many` call states that `%Album{}` schema will have a field called tracks. which consist of zero or more instances of the `%Track{}`. In this association, the `%Album{}` is **parent** record and `%Track{}` are the **child** records. For this to work Ecto will look for `album_id` in tracks table to connect it to albums.    
+
+> [!NOTE]
+> If tracks table uses `album_number` for example rather than default `album_id` for the foreign key then we could create the association like this:    
+```elixir
+has_many :tracks, MusicDB.Track, foreign_key: :album_number
+```     
+Ecto also provided **has_one** association which works exactly like `has_many` but limits the number of associated records to <ins>zero or one</ins>.    
+
+### Belongs-to Associations    
+Most of the time you will want your association to work in both directions. As you previously refer to tracks from an album record `has_many :track, MusicDB.Track`. Similarly you would want to refer to an album from track. Hence we will use **belongs_to** associations as the <ins>reverse of `has_many` and `has_one`</ins>             
+```elixir
+schema "tracks" do
+  field :title, :string
+
+  belongs_to :album, MusicDB.Album
+end
+```      
+Again, Ecto will assume tracks table will have a field named `album_id`. However if the field has different name than a default then we can use `foreign_key:` option to specify it.
+But we have another association being child in one-to-many with artists. We can set this up by adding `belongs_to` call in the `%Album{}` schema and a `has_many` call in `%Artist{}` schema as follows:    
+```elixir
+# in album.ex
+schema "albums" do
+
+  has_many :tracks, MusicDB.Track
+  belongs_to :artist, MusicDB.Artist
+end
+
+# in artist.ex
+schema "artists" do
+
+  has_many :albums, MusicDB.Album
+end
+```           
+The `%Album{}` schema now has associations in two directions: it `has_many` **tracks**, and it `belongs_t` **artist**.   
+    
+> [!NOTE]  
+> `belongs_to` goes on the schema with the foreign key. for example, **tracks** has the foreign key `album_id`
+> and opposite (i.e. **albums**) gets `has_many`.  
+> Similarly, **albums** has the foreign key `artist_id` so it gets `belongs_to` and **artists** table gets a `has_many` for albums.      
+
+### Nested Associations    
+So far we added a `has_many` association from *artists* to *albums* and another `has_many` from *albums* to *tracks* which can look something like this:    
+<img src="entity_relationship2.png" alt="Entity Relationship">   
+    
+You may want to refer to **tracks** directly from **artists** without having to go through the **albums**. This is called a **nested association**   
+   
+To create nested association we will add another has_many call to the *artists* but this time we'll ass the `through:` option.   
+```elixir
+schema "artists" do
+
+  has_many :albums, MusicDB.Album
+  has_many :tracks, through: [:albums, :tracks]
+end
+```   
+The `through:` option takes a list `[:albums, :tracks]` representing the steps to get from the current schema to the schema we want to associate with. Ecto first read `[:albums, ..]` and also the association `has_many :albums ...` defined in previous line. Ecto will look in that schema to find the next item, tracks. This nesting can go as deep as you need but be carefull as more than two or three levels most likely to get messy.     
+Now, we can refer to an artist's `%Track{}` records directly from the `%Artist{}` record without having to go through the albums.    
+
+> [!IMPORTANT]   
+> **belongs_to** is not supported for nested association.      
+
+
 
 
 
