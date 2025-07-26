@@ -1,4 +1,10 @@
-# Pento
+### Pento.     
+     
+```bash
+$ mix phx.new pento
+$ mix ecto.create
+$ mix phx.gen.auth Accounts User users
+```     
 
 To start your Phoenix server:
 

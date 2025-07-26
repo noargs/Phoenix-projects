@@ -753,7 +753,7 @@ The `%Album{}` schema now has associations in two directions: it `has_many` **tr
 
 ### Nested Associations    
 So far we added a `has_many` association from *artists* to *albums* and another `has_many` from *albums* to *tracks* which can look something like this:    
-<img src="entity_relationship2.png" alt="Entity Relationship">   
+<img src="./images/entity_relationship2.png" alt="Entity Relationship">   
     
 You may want to refer to **tracks** directly from **artists** without having to go through the **albums**. This is called a **nested association**   
    
@@ -872,9 +872,126 @@ Therefore the end result is the same: the embedded records are loaded into the a
 
 ### Deleting records with Associations    
 What should happen to child records (tracks) when a parent record (albums) is deleted? Ecto provide `on_delete:` however the exact implementation vary on the database.     
-> `has_many`, `has_one`, and `many_to_many` functions all support `on_delete` options and `on_delete` can have one of three options. `:nothing`, `:nilify_all` (all child records will have parent record's foreign key to null), and `:delete_all` (delete all of the child records along with the parent record)
-    
+> `has_many`, `has_one`, and `many_to_many` functions all support `on_delete` options and `on_delete` can have one of three options. `:nothing`, `:nilify_all` (all child records will have parent record's foreign key to null), and `:delete_all` (delete all of the child records along with the parent record).   
+     
+### Using schemas to Seeed a database.     
+Once you’ve set up schemas for your tables, inserting new records, even records with nested associations.   
 
+> You don't have to insert one record (i.e. `Artist`) and get the id of new record and then create the album record with `artist_id` set to the `id` of the new artist. You can insert the two records at the sametime thanks to Ecto.     
+```elixir
+Repo.insert(
+  %Artist{
+    name: "John Coltrane", 
+    albums: [
+      %Album{
+        title: "A Love Supreme"
+      } 
+    ]
+  } 
+)
+
+# Similarly, we can do same with deeply nested association.
+Repo.insert(
+  %Artist{
+    name: "John Coltrane", 
+    albums: [
+      %Album{
+        title: "A Love Supreme", 
+        tracks: [
+          %Track{title: "Part 1: Acknowledgement", index: 1}, 
+          %Track{title: "Part 2: Resolution", index: 2}, 
+          %Track{title: "Part 3: Pursuance", index: 3}, 
+          %Track{title: "Part 4: Psalm", index: 4},
+        ],
+        genres: [
+          %Genre{name: "spiritual jazz"},
+        ] 
+      }
+    ] 
+  }
+)
+```         
+    
+# Changeset   
+Changeset manage the update process by breaking into three distinct steps: casting, filtering, validating the user input and then sending the input to the database and capture the result.       
+```elixir
+import Ecto.Changeset
+params = %{name: "Gene Harris"}
+
+changeset = 
+  %Artist{}
+  |> cast(params, [:name])
+  |> validate_required([:name])
+
+case Repo.insert(changeset) do
+  {:ok, artist} -> IO.puts("Recrod for #{artist.name} was created")
+  {:error, changeset} -> IO.inspect(changeset.errors)
+end
+```    
+    
+### Creating Changesets using Internal Data    
+If the data is internal to the application (that you are generating the data yourself in your application code). you can create a changeset using the `Ecto.Changeset.change`.      
+> Don't forget to `import` which makes all the function in `Ecto.Changeset` available in our code.    
+```elixir
+import Ecto.Changeset
+
+artist = Repo.get_by(Artist, name: "Bobby Hutcherson")
+changeset = change(artist, name: "Robert Hutcherson")
+```    
+We added the data we would like to change as an optional argument to the `change` function. At this point, `changeset` is just a data structure in the memory. No communication with database has taken place until Repo is involved. Before we commit the changes with `Repo.update(changeset)` we can take a peek at the changes with `changeset.changes`. Here's the full code.    
+```elixir
+import Ecto.Changeset
+
+artist = Repo.get_by(Artist, name: "Bobby Hutcherson")
+changeset = change(artist, name: "Robert Hutcherson")
+
+# only to peek
+changeset.changes
+
+# commit to database
+Repo.update(changeset)
+```   
+We can also add more changes to changeset through `change` function which is already been created.   
+```elixir
+changeset = change(changeset, birth_date: ~D[1941-01-27]) 
+```     
+     
+> It's also posible to add both changes to a single `change` call:
+```elixir
+artist = Repo.get_by(Artist, name: "Bobby Hutcherson")
+changeset = change(artist, name: "Robert Hutcherson", birth_date: ~D[1947-01-27])
+```    
+In either case, calling `changes` will now show both of the values that we are updating: 
+```elixir
+changeset.changes
+#=> %{birth_date: ~D[1941-01-27], name: "Robert Hutcherson"}
+```     
+    
+### Creating Changesets using External Data       
+As data come from external world we need to take extra care. Hence we will use `cast` function which play a simillar role to `change`, as it take raw data and return `Changeset`, However its got few extra features to make sure you are getting only the data you want.   
+
+`cast` takes three paramters:     
+     
+1. A data structure represents the record you want to apply your changes to, 
+    - this could be new schema struct (i.e. `%Artist{}`), 
+    - or a schema fetched from the database 
+    - or another changeset      
+
+2. Second argument is a map containing raw data that you want to apply.    
+
+3. Third argument is a list of parameters that your will allow to be added to the changeset.     
+
+Here is how we could create a changeset for a new `Artist` record using user-supplied parameters (`param` variable represent values supplied by the user).     
+    
+```elixir
+params = %{"name" => "Charlie Parker", 
+           "birth_date" => "1920-08-29",
+           "instrument" => "alto sax"
+          }  
+changeset = cast(%Artist{}, params, [:name, :birth_date])
+changeset.changes
+#=> %{birth_date: ~D[1920-08-29], name: "Charlie Parker"}
+```                
 
 
 
