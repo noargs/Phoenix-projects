@@ -991,7 +991,15 @@ params = %{"name" => "Charlie Parker",
 changeset = cast(%Artist{}, params, [:name, :birth_date])
 changeset.changes
 #=> %{birth_date: ~D[1920-08-29], name: "Charlie Parker"}
-```                
+```    
+When you see the results, we gave `instrument` as a `params` but it didn't come in result as not allowed values. Secondly, the call to cast converted the birth_date value from the string `"1920-08-29"` to an Elixir Date struct `~D[1920-08-29]`. As the name suggests, cast will perform type casting when turning the raw input into a changeset. By default cast function will treat the empty string "" as nil when creating the changeset. But in other times you want irelavent values to be nill i.e. (working in Spreadsheet). Sometime instead of empty cell, you get can string "NULL".    
+```elixir
+params = %{"name" => "Charlie Parker", "birth_date" => "NULL"} changeset = cast(%Artist{}, params, [:name, :birth_date],
+            empty_values: ["", "NULL"]) 
+changeset.changes
+#=> %{name: "Charlie Parker"}
+```           
+        
 
 
 
