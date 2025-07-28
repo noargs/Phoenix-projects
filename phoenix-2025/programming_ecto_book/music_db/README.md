@@ -874,7 +874,7 @@ Therefore the end result is the same: the embedded records are loaded into the a
 What should happen to child records (tracks) when a parent record (albums) is deleted? Ecto provide `on_delete:` however the exact implementation vary on the database.     
 > `has_many`, `has_one`, and `many_to_many` functions all support `on_delete` options and `on_delete` can have one of three options. `:nothing`, `:nilify_all` (all child records will have parent record's foreign key to null), and `:delete_all` (delete all of the child records along with the parent record).   
      
-### Using schemas to Seeed a database.     
+### Using schemas to Seed a database.     
 Once you’ve set up schemas for your tables, inserting new records, even records with nested associations.   
 
 > You don't have to insert one record (i.e. `Artist`) and get the id of new record and then create the album record with `artist_id` set to the `id` of the new artist. You can insert the two records at the sametime thanks to Ecto.     
@@ -913,7 +913,7 @@ Repo.insert(
 ```         
     
 # Changeset   
-Changeset manage the update process by breaking into three distinct steps: casting, filtering, validating the user input and then sending the input to the database and capture the result.       
+Changeset manage the update process by breaking into three distinct steps: **casting**, **filtering**, **validating the user input** and then sending the input to the database and capture the result.       
 ```elixir
 import Ecto.Changeset
 params = %{name: "Gene Harris"}
@@ -926,8 +926,46 @@ changeset =
 case Repo.insert(changeset) do
   {:ok, artist} -> IO.puts("Recrod for #{artist.name} was created")
   {:error, changeset} -> IO.inspect(changeset.errors)
-end
-```    
+end    
+```      
+     
+> [!SUMMARY]      
+To use **changeset without schema**; you have to create changeset with `cast` function and provide it a map of `table_map = %{column1: :type, column2: :type}` as follows:   
+```elixir
+table_map = %{column1: :type, column2: :type}
+params = %{"column1" => "value", "column2" => "value"}   
+
+changeset =
+  {%{}, table_map}
+  |> cast(params, Map.key(table_map))
+  |> validate_some()
+  |> some_constraint()
+  |> Repo.
+```
+> We can run **validation** after changeset created. Other validation functions are named as **validate_[role]\()** i.e. `validate_required`, `validate_format`, `validate_number`, or `validate_length` etc. You can also create your custom validation function with the help of `validate_change(chngset, :column, fn column -> end)`. validation runs and errors are generated <ins>before</ins> data make a trip to database (<ins>**Repo** hasn't been run yet</ins>). Changeset struct has field `chngset.valid?` to check the finall results.    
+
+> **Constraint** can run after validation. They are named as **_constraint()** i.e. `unique_constraint`, `foreign_key_constraint`. Constraint often governed by database. Hence constraint runs and errors are generated <ins>after</ins> data make a trip to database(<ins>afer running **Repo**</ins>).     
+
+> To **run validation and constraint all at once** (for better user experience so to give end-users collections of all the errors output at once (i.e. validation errors and constraint errors), use **unsafe_validate_unique()**.     
+
+> **Capture errors** once you already ran Repo and use `{:error, changeset} ->` body in the `case Repo.insert(chngset) do`. 
+
+> To **update internal Data**, We use `change(chngset, column: value)` function to update new record (<ins>without association</ins>)     
+
+> To **update external Data** (coming from spreadsheet, user form data etc), we use `cast(empt_struct{}, params, [:column1, column2])` function to update new record (<ins>without association</ins>)      
+
+> To **update/delete internal** data <ins>with association</ins> as well as <ins>single record</ins>; we use `build_assoc(%Schema1{..}, :tbl2, tbl2_column1: "value")`        
+
+> To **update/delete internal** data <ins>with association</ins> And <ins>collection of records</ins>; we use `put_assoc(chngset, :tbl2, [%Schema2{column: "value"}])`. You can also use map `[%{column, "value"}]` or list, `[[column: "value"]]`.     
+
+> All the **functions which add association** to schemas (`has_many`, `belongs_to` etc) all take an optional argument called **:on_replace** which can be set to one of five different values:  
+**:raise** default behaviour. if you dont provide values.     
+**:mark_as_invalid** you will get changeset error instead of crash     
+**:nilify** foreign key of the associated record will set to `nil`.        
+**:update** can only be used with `has_on` and `belongs_to`      
+**:delete** delete any child records currently associated with parent           
+
+> To **create from external Data** data <ins>with association</ins> we use `cast_assoc(chngset, tbl2)`. We first run `cast` and then `cast_assoc`. **You must have changeset/2 function defined in tbl2 schama file**.        
     
 ### Creating Changesets using Internal Data    
 If the data is internal to the application (that you are generating the data yourself in your application code). you can create a changeset using the `Ecto.Changeset.change`.      
