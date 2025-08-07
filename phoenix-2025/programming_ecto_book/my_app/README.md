@@ -1,5 +1,5 @@
 ### MyApp     
-Created this simple mix project by running `mix new my_app --sup` to add Ecto manually to demonstrate how to add Ecto to your non-phoenix App.      
+Created this simple mix project by running `mix new my_app --sup` to add Ecto manually to demonstrate how to add Ecto to your non-phoenix plain elixir App.      
     
 > Notice the **--sup** above while creating mix project `my_app`. This because Ecto does all of its work in separate OTP processes. It needs to be part of a supervision tree to make sure that it starts up correctly and restarted if a process fails.  
 > **--sup** also generate `application.ex` file  
