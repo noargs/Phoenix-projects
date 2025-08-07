@@ -1036,7 +1036,22 @@ params = %{"name" => "Charlie Parker", "birth_date" => "NULL"} changeset = cast(
             empty_values: ["", "NULL"]) 
 changeset.changes
 #=> %{name: "Charlie Parker"}
-```           
+```         
+
+# Migration.    
+If your project has more than repo, you can use `-r` option to apply migration to paticular repo.   
+```elixir
+mix ecto.gen.migration add_compositions_table -r MusicDB.Repo
+```      
+    
+### pgsql commands.   
+Open and connect with music_db database in the psql command line    
+```bash
+music_db=# 
+music_db=# \dt
+music_db=# \d compositions
+music_db=# select * from schema_migrations;
+```    
         
 
 
