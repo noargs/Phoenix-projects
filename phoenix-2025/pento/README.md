@@ -6,6 +6,7 @@ $ mix ecto.create
 $ mix phx.gen.auth Accounts User users
 $ mix phx.gen.live Catalog Product products \
   name:string description:string unit_price:float sku:integer:unique
+$ mix run priv/repo/seeds.ex
 ```     
 
 To start your Phoenix server:
