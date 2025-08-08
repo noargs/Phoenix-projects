@@ -1,0 +1,4 @@
+alias Pento.{
+  Repo,
+  Accounts
+}

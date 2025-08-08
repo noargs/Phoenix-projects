@@ -4,6 +4,8 @@
 $ mix phx.new pento
 $ mix ecto.create
 $ mix phx.gen.auth Accounts User users
+$ mix phx.gen.live Catalog Product products \
+  name:string description:string unit_price:float sku:integer:unique
 ```     
 
 To start your Phoenix server:
