@@ -20,6 +20,7 @@ defmodule ProductsWeb.SupplierJSON do
       id: supplier.id,
       tin: supplier.tin,
       name: supplier.name,
+      legal_name: supplier.legal_name,
       discount: supplier.discount
     }
   end

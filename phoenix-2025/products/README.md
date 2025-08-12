@@ -5,6 +5,12 @@ $ mix phx.new products --binary-id --no-assets --no-gettext --no-html --no-live 
 
 $ mix ecto.create
 ```     
+   
+**put_status/2** in controller convert atom (i.e. `:created`, `:not_found`, and `:unprocessable_entity`) into integer (`200`, `404`, `422` etc) with help of `Plug.Conn.Status.code/1`. You can also provide integer to `put_status(:created)`    
+**put_resp_header/3** sets the value of key or update the value of key in response header if key already exist. Following example shows `"location"` key in the `SupplierController.create/2` as follows:    
+```elixir
+put_resp_header("location", ~p"/api/suppliers/#{supplier}")
+```   
 
 
 ### Domain-driven design     
