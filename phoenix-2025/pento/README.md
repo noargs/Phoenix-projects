@@ -8,6 +8,28 @@ $ mix phx.gen.live Catalog Product products \
   name:string description:string unit_price:float sku:integer:unique
 $ mix run priv/repo/seeds.ex
 ```     
+    
+### Components    
+Components can be found in `deps/phoenix/priv/templates/*`.  
+```elixir
+<.header>
+Listing Products ...
+</header>
+
+<.header class="bold" > Listing Products
+...
+</header>
+
+def header(assigns) do
+  ~H"""
+<%= @class %> """
+end
+```   
+    
+The `header/1` function component implements <ins>three slots</ins> for rendering custom content.     
+1. **inner block**:  Its default slot. Any content in between `<.header>` that isn't encapsulated in named slot like `<:actions>` becomes the value of `@inner_block`. It renders the @inner_block assignment like this: `<%= render_slot(@inner_block) %>`
+2. **subtitle**, `<%= render_slot(@subtitle) %>`  
+3. and **actions** slots: `<%= render_slot(@actions) %>`    
 
 To start your Phoenix server:
 
