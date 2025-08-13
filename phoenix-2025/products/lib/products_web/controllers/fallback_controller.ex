@@ -18,7 +18,8 @@ defmodule ProductsWeb.FallbackController do
   def call(conn, {:error, :not_found}) do
     conn
     |> put_status(:not_found)
-    |> put_view(html: ProductsWeb.ErrorHTML, json: ProductsWeb.ErrorJSON)
+    # |> put_view(html: ProductsWeb.ErrorHTML, json: ProductsWeb.ErrorJSON)
+    |> put_view(json: ProductsWeb.ErrorJSON)
     |> render(:"404")
   end
 end

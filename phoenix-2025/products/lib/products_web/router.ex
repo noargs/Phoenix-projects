@@ -1,8 +1,10 @@
 defmodule ProductsWeb.Router do
   use ProductsWeb, :router
+  alias ProductsWeb.Plugs
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug Plugs.PayloadValidation
   end
 
   scope "/api", ProductsWeb do

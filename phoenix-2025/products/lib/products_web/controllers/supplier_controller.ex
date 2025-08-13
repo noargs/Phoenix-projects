@@ -20,6 +20,14 @@ defmodule ProductsWeb.SupplierController do
     end
   end
 
+  # catch-all caluse to deal with malinformed request bodies in POST
+  def create(conn, _params) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(json: ProductsWeb.ErrorJSON)
+    |> render(:"400")
+  end
+
   def show(conn, %{"id" => id}) do
     supplier = Supply.get_supplier!(id)
     render(conn, :show, supplier: supplier)

@@ -1,6 +1,7 @@
 defmodule Products.Supply.Supplier do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Products.Repo
   require Logger
 
   @mx_discount 10_000
@@ -26,7 +27,7 @@ defmodule Products.Supply.Supplier do
     supplier
     |> cast(attrs, permitted) |> validate_required(required) |> validate_length(:name, max: @mx_name)
     |> validate_number(:discount, greater_than_or_equal_to: 0, less_than_or_equal_to: @mx_discount)
-    |> validate_tin() |> unique_constraint(:tin) |> unique_constraint(:name)
+    |> check_unique_tin() |> validate_tin() |> unique_constraint(:tin) |> unique_constraint(:name)
     |> validate_length(:legal_name, max: @mx_name)
   end
 
@@ -65,6 +66,21 @@ defmodule Products.Supply.Supplier do
 
         _ -> changeset
       end
+  end
+
+  def check_unique_tin(%Ecto.Changeset{} = changeset) do
+    tin = get_change(changeset, :tin)
+
+    if is_nil(tin) do
+      changeset
+    else
+      case Repo.get_by(__MODULE__, tin: tin) do
+        nil -> changeset
+
+        %__MODULE__{name: name} ->
+          add_error(changeset, :tin, "has already been taken by the supplier with the name `#{name}`")
+      end
     end
+  end
 
 end
