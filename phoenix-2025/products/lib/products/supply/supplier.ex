@@ -83,4 +83,7 @@ defmodule Products.Supply.Supplier do
     end
   end
 
+  defp vies_lookup(tin), do: impl().lookup(tin)
+  defp impl, do: Application.get_env(:products, :vies_service, Viex)
+
 end

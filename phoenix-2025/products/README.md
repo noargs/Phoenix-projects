@@ -55,6 +55,11 @@ $ mix ecto.migrate
 $ mix ecto.gen.migration SupplierLegalName
 ```    
     
+### Request with Curl
+```bash
+$ curl -w '\n' -s -X POST -H "Content-Type: application/json" -d '{"name": "YOLOTRONIC Laboratories SMPC"}' http://localhost:4000/api/suppliers
+```    
+    
     
 
 

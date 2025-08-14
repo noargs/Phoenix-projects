@@ -1,20 +1,10 @@
 defmodule ProductsWeb.SupplierControllerTest do
   use ProductsWeb.ConnCase
-
   import Products.SupplyFixtures
-
   alias Products.Supply.Supplier
 
-  @create_attrs %{
-    name: "some name",
-    tin: "some tin",
-    discount: 42
-  }
-  @update_attrs %{
-    name: "some updated name",
-    tin: "some updated tin",
-    discount: 43
-  }
+  @create_attrs %{name: "OVERBRING Labs", tin: "EL802586446", discount: 0}
+  @update_attrs %{tin: "IT03563100365", discount: 2_000} # 20.00%
   @invalid_attrs %{name: nil, tin: nil, discount: nil}
 
   setup %{conn: conn} do
