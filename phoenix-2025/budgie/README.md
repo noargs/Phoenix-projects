@@ -6,6 +6,9 @@ $ iex -S mix phx.server
 $ mix phx.gen.auth Accounts User users --hashing-lib argon2 # liveview based auth, type `Y`
 $ mix deps.get
 $ mix ecto.migrate
+
+# add `name` field in user schema `field :name, :string`
+$ mix ecto.gen.migration add_user_name
 ```     
      
 
