@@ -2,6 +2,8 @@ defmodule ProductsWeb.SupplierControllerTest do
   use ProductsWeb.ConnCase
   import Products.SupplyFixtures
   alias Products.Supply.Supplier
+  import Mox
+  setup :verify_on_exit!
 
   @create_attrs %{name: "OVERBRING Labs", tin: "EL802586446", discount: 0}
   @update_attrs %{tin: "IT03563100365", discount: 2_000} # 20.00%
@@ -78,5 +80,21 @@ defmodule ProductsWeb.SupplierControllerTest do
   defp create_supplier(_) do
     supplier = supplier_fixture()
     %{supplier: supplier}
+  end
+
+  describe "create supplier" do
+    test "renders supplier when data is valid", %{conn: conn} do
+      Products.MockViesService
+      |> expect(:lookup, fn "EL802586446" ->
+        %Viex.Response{valid: true, company: "OVERBRING S.M.P.C.||OVERBRING LABS", address: "Athens, 11 Greece" }
+      end)
+
+      conn = post(conn, ~p"/api/suppliers", supplier: @create_attrs)
+      assert %{"id" => id} = json_response(conn, 201)["data"]
+
+      conn = get(conn, ~p"/api/suppliers/#{id}")
+
+      assert %{"id" => ^id, "discount" => 0, "name" => "OVERBRING LABS", "legal_name" => "OVERBRING S.M.P.C.", "tin" => "EL802586446"} = json_response(conn, 200)["data"]
+    end
   end
 end

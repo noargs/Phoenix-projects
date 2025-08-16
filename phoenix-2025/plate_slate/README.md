@@ -1,4 +1,4 @@
-### PlateSlate.     
+### PlateSlate     
     
 - Asking Graphql server to provide information calls `query`.
 - Persisting a change to data is called `mutation`

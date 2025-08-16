@@ -3,6 +3,7 @@ defmodule Products.Supply.Supplier do
   import Ecto.Changeset
   alias Products.Repo
   require Logger
+  alias Products.ViexService
 
   @mx_discount 10_000
   @mx_name 200
