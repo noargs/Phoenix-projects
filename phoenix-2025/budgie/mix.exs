@@ -32,7 +32,8 @@ defmodule Budgie.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:argon2_elixir, "~> 3.0"},
+      # {:argon2_elixir, "~> 3.0"},
+      {:argon2id_elixir, "~> 1.1"},
       {:phoenix, "~> 1.7.20"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},

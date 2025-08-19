@@ -78,7 +78,8 @@ defmodule Budgie.Accounts.User do
       changeset
       # Hashing could be done with `Ecto.Changeset.prepare_changes/2`, but that
       # would keep the database transaction open longer and hurt performance.
-      |> put_change(:hashed_password, Argon2.hash_pwd_salt(password))
+      # |> put_change(:hashed_password, Argon2.hash_pwd_salt(password))
+      |> put_change(:hashed_password, Argon2.hash_password(password))
       |> delete_change(:password)
     else
       changeset
@@ -145,7 +146,8 @@ defmodule Budgie.Accounts.User do
   """
   def valid_password?(%Budgie.Accounts.User{hashed_password: hashed_password}, password)
       when is_binary(hashed_password) and byte_size(password) > 0 do
-    Argon2.verify_pass(password, hashed_password)
+    # Argon2.verify_pass(password, hashed_password)
+    Argon2.verify_password(password, hashed_password)
   end
 
   def valid_password?(_, _) do
