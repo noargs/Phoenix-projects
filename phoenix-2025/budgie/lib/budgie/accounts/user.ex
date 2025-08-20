@@ -151,7 +151,7 @@ defmodule Budgie.Accounts.User do
   end
 
   def valid_password?(_, _) do
-    Argon2.no_user_verify()
+    # Argon2.no_user_verify()
     false
   end
 

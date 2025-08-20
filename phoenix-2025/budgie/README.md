@@ -33,8 +33,6 @@ Argon2.verify_password("secure_password123", hash)
 > If you use [`argon2id_elixir`](https://hexdocs.pm/argon2id_elixir/Argon2.html) library which doesn't have equavalent of `no_user_verify()`, Which is a dummy verify function to help prevent user enumeration. It is intended to make it more difficult for any potential attacker to find valid usernames by using timing attacks. 
 > You can write in Rust  
 
-
-
 - Install **make** on windows in order to use `{:argon2_elixir, "~> 3.0"},`     
 - Install **make** by running `winget install ezwinports.make` and restarting the powershell. (No need to install Chocolatey). Alternatively check MinGW at `C:\MinGW\bin` has `make.exe` in the <ins>environmental varaible</ins>.      
 - Install <ins>Microsoft visual studio community 2022</ins> and <ins>build tools</ins> and also following link in your <ins>environmental varaible</ins>
@@ -44,7 +42,19 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\%YOUR_VERS
 - Also ensure above link physcial directory contain `nmake.exe` file   
 - Install `https://www.msys2.org/` go to  `C:\msys64` and run `ucrt64.exe` and use **ucrt64.exe** shell. 
 - Now go to `C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build` (to check if its proper path) and **run** `cmd \K C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat x64`  in your elixir project folder.    
-- Finally run `mix deps.compile`
+- Finally run `mix deps.compile`    
+     
+```bash
+$ mix ecto.gen.migration create_budgets     
+```    
+    
+Now fill <ins>schema</ins> and <ins>migration</ins> files (`Budgie.Tracking.Budget` and `[timeline]_create_budgets.exs`)    
+   
+```bash
+$ mix ecto.migrate   
+```       
+
+
 
 To start your Phoenix server:
 
