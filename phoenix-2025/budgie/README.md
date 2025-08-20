@@ -53,6 +53,50 @@ Now fill <ins>schema</ins> and <ins>migration</ins> files (`Budgie.Tracking.Budg
 ```bash
 $ mix ecto.migrate   
 ```       
+     
+### Create Budget from iex
+```bash
+iex(3)> Budgie.Tracking.create_budget()
+{:error,
+ #Ecto.Changeset<
+   action: :insert,
+   changes: %{},
+   errors: [
+     name: {"can't be blank", [validation: :required]},
+     start_date: {"can't be blank", [validation: :required]},
+     end_date: {"can't be blank", [validation: :required]},
+     creator_id: {"can't be blank", [validation: :required]}
+   ],
+   data: #Budgie.Tracking.Budget<>,
+   valid?: false,
+   ...
+ >}
+
+iex(4)> user = Budgie.Accounts.get_user_by_email("ibn@asghar.com")
+#[debug] QUERY OK source="users" db=7.6ms decode=1.1ms queue=1.2ms idle=1343.5ms
+#SELECT u0.... WHERE (u0."email" = $1) ["ibn@asghar.com"]
+#↳ :elixir.eval_external_handler/3, at: src/elixir.erl:386
+#Budgie.Accounts.User<
+  __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+  id: "ccc89620-f837-416e-894f-8e1b7a680f77",
+  email: "Ibn@asghar.com",
+  name: "Ibn",
+  confirmed_at: nil,
+  inserted_at: ~U[2025-08-19 15:02:47Z],
+  updated_at: ~U[2025-08-19 15:02:47Z],
+  ...
+>
+
+iex(5)> Budgie.Tracking.create_budget(%{
+...(5)>   name: "hello budgie",
+...(5)>   start_date: ~D[2025-08-10],
+...(5)>   end_date: ~D[2025-08-30],
+...(5)>   creator_id: user.id
+...(5)> })
+```     
+    
+### Create test in `test/budgie/tracking_test.exs`    
+    
 
 
 
