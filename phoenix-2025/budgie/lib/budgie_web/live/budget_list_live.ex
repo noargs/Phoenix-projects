@@ -24,7 +24,7 @@ defmodule BudgieWeb.BudgetListLive do
         show
       >
         <.live_component
-          module={BudgieWebCreateBudgetDialog}
+          module={BudgieWeb.CreateBudgetDialog}
           id="create-budget"
           current_user={@current_user}
         />

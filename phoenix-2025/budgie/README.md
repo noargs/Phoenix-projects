@@ -96,7 +96,27 @@ iex(5)> Budgie.Tracking.create_budget(%{
 ```     
     
 ### Create test in `test/budgie/tracking_test.exs`    
-    
+
+### Handling user events  
+**phx-change="validate"**  attribute in `heex` file will invoke    
+```elixir
+def handle_event("validate", %{budget => params}, socket) do
+  ...
+  {:noreply, assign(socket, form: to_form(changeset))}
+end
+```  
+**phx-submit** attribute in `heex` file will invoke   
+```elixir
+def handle_event("save", %{budget => params}, socket) do
+  ...
+   with {:ok, %Budget{}} <- Tracking.create_budget(params) do
+      socket = socket |> put_flash(:info, "Budget created") |> push_navigate(to: ~p"/budgets", replace: true)
+      {:noreply, socket}
+    else
+      {:error, changeset} -> {:noreply, assign(socket, form: to_form(changeset))}
+    end
+end
+```          
 
 
 
