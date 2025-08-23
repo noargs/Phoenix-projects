@@ -16,7 +16,7 @@ defmodule Budgie.Tracking.BudgetTransaction do
   end
 
   @doc false
-  def changeset(budget_transaction, attrs) do
+  def changeset(budget_transaction, attrs, budget) do
     budget_transaction
     |> cast(attrs, [:effective_date, :type, :amount, :description, :budget_id])
     |> validate_required([:effective_date, :type, :amount, :description, :budget_id])

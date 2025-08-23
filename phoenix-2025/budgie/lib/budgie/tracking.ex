@@ -41,9 +41,9 @@ defmodule Budgie.Tracking do
 
   alias Budgie.Tracking.BudgetTransaction
 
-  def create_transaction(attrs \\ %{}) do
+  def create_transaction(%Budget{} = budget, attrs \\ %{}) do
     %BudgetTransaction{}
-    |> BudgetTransaction.changeset(attrs)
+    |> BudgetTransaction.changeset(attrs, budget)
     |> Repo.insert()
   end
 
@@ -74,5 +74,15 @@ defmodule Budgie.Tracking do
       _, query ->
         query
     end)
+  end
+
+  def change_transaction(
+        %BudgetTransaction{
+          budget: %Budget{} = budget
+        } = transaction,
+        attrs
+      )
+      when is_map(attrs) do
+    BudgetTransaction.changeset(transaction, attrs, budget)
   end
 end
