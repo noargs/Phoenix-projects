@@ -16,10 +16,10 @@ defmodule Budgie.Repo.Migrations.CreateBudgets do
     create index(:budgets, [:creator_id])
 
     create constraint(
-        :budgets,
-        :budget_end_after_start,
-        check: "end_date > start_date",
-        comment: "Budget must end after its start date"
-      )
+             :budgets,
+             :budget_end_after_start,
+             check: "end_date > start_date",
+             comment: "Budget must end after its start date"
+           )
   end
 end

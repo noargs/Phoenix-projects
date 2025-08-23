@@ -37,5 +37,4 @@ defmodule BudgieWeb.CreateBudgetDialog do
       {:error, changeset} -> {:noreply, assign(socket, form: to_form(changeset))}
     end
   end
-
 end

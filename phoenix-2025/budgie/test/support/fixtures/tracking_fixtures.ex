@@ -1,13 +1,12 @@
 defmodule Budgie.TrackingFixtures do
-
   def valid_budget_attributes(attrs \\ %{}) do
     attrs
     |> add_creator_if_necessary()
     |> Enum.into(%{
-        name: "weekly budget",
-        description: "my budget described",
-        start_date: ~D[2025-08-01],
-        end_date: ~D[2025-08-31],
+      name: "weekly budget",
+      description: "my budget described",
+      start_date: ~D[2025-08-01],
+      end_date: ~D[2025-08-31]
     })
   end
 
@@ -26,5 +25,4 @@ defmodule Budgie.TrackingFixtures do
       user.id
     end)
   end
-
 end
