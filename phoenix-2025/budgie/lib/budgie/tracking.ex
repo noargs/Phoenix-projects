@@ -76,13 +76,22 @@ defmodule Budgie.Tracking do
     end)
   end
 
-  def change_transaction(
-        %BudgetTransaction{
-          budget: %Budget{} = budget
-        } = transaction,
-        attrs
-      )
-      when is_map(attrs) do
-    BudgetTransaction.changeset(transaction, attrs, budget)
+  def change_transaction(budget, attrs \\ %{}) do
+    BudgetTransaction.changeset(budget, attrs)
+  end
+
+  def summerize_budget_transactions(%Budget{id: budget_id}), do: summerize_budget_transactions(budget_id)
+
+  def summerize_budget_transactions(budget_id) do
+    query =
+      from t in transaction_query(budget: budget_id, order_by: nil),
+        select: [t.type, sum(t.amount)],
+        group_by: t.type
+
+    query
+    |> Repo.all()
+    |> Enum.reduce(%{}, fn [type, amount], summary ->
+      Map.put(summary, type, amount)
+    end)
   end
 end

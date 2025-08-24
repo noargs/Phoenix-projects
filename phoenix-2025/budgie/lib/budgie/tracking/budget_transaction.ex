@@ -1,4 +1,5 @@
 defmodule Budgie.Tracking.BudgetTransaction do
+  alias Budgie.Tracking.BudgetTransaction
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -16,8 +17,9 @@ defmodule Budgie.Tracking.BudgetTransaction do
   end
 
   @doc false
-  def changeset(budget_transaction, attrs, budget) do
-    budget_transaction
+  def changeset(attrs, budget) do
+    # budget_transaction
+    %BudgetTransaction{}
     |> cast(attrs, [:effective_date, :type, :amount, :description, :budget_id])
     |> validate_required([:effective_date, :type, :amount, :description, :budget_id])
     |> validate_number(:amount, greater_than_or_equal_to: 0)
