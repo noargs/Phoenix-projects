@@ -10,6 +10,38 @@ $ mix ecto.migrate
 # add `name` field in user schema `field :name, :string`
 $ mix ecto.gen.migration add_user_name
 ```     
+    
+- You will find `@current_user.email` in `lib/budgie_web/components/layouts/root.html.heex` and also a place to add `@current_user.name`     
+- Add name field to **Register** form as well as **register_changeset**     
+```elixir
+# lib/budgie_web/live/user_registeration_live.ex
+<.input field={@form[:name]} type="text" label="Name" required />
+
+# lib/budgie/accounts/user.ex
+def registration_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email, :password, :name])
+end
+```     
+    
+- Run `mix test` and add **valid_user_attributes** upon errors.    
+```elixir
+# test/support/fixtures/accounts_fixtures.ex
+def valid_user_attributes(attrs \\ %{}) do
+  Enum.into(attrs, %{
+    name: unique_user_name(),
+    email: ...
+  })
+end
+```    
+    
+- Run `mix test` upon error, add `:name` field in 
+```elixir
+# test/budgie/accounts_test.exs
+describe "change_user_registration/2" do
+    test "returns a changeset" do
+end
+```
 
 Below doesn't work hence alternative library which is {:argon2id_elixir, "~> 1.1"}, is used developed in Rust instead of Old C library in [`:argon2_elixir`](https://hexdocs.pm/argon2_elixir/1.2.0/Argon2.html). Below is the functions available in both. 
     
