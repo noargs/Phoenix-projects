@@ -35,11 +35,12 @@ defmodule Budgie.TrackingTest do
         valid_budget_attributes()
         |> Map.merge(%{
           start_date: ~D[2025-08-01],
-          end_date: ~D[2025-07-01],
+          end_date: ~D[2025-07-01]
         })
 
       assert {:error, %Ecto.Changeset{} = changeset} =
-        Tracking.create_budget(attrs)
+               Tracking.create_budget(attrs)
+
       assert changeset.valid? == false
       assert %{end_date: ["must end after start date"]} = errors_on(changeset)
     end

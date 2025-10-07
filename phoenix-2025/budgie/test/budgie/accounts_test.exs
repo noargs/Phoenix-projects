@@ -318,7 +318,10 @@ defmodule Budgie.AccountsTest do
 
     test "validates current password", %{user: user} do
       {:error, changeset} =
-        Accounts.update_user_password(user, "password not exist", %{password: valid_user_password()})
+        Accounts.update_user_password(user, "password not exist", %{
+          password: valid_user_password()
+        })
+
       assert %{current_password: ["is not valid"]} = errors_on(changeset)
     end
 

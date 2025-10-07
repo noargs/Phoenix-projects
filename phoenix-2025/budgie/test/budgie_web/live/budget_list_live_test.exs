@@ -1,8 +1,8 @@
 defmodule BudgieWeb.BudgetListLiveTest do
   use BudgieWeb.ConnCase, async: true
-
   import Phoenix.LiveViewTest
   import Budgie.TrackingFixtures
+  alias Budgie.Tracking
 
   setup do
     user = Budgie.AccountsFixtures.user_fixture()
@@ -15,7 +15,7 @@ defmodule BudgieWeb.BudgetListLiveTest do
       budget = budget_fixture(%{creator_id: user.id})
 
       conn = log_in_user(conn, user)
-      {:ok, lv, html} = live(conn, ~p"/budgets")
+      {:ok, _lv, html} = live(conn, ~p"/budgets")
 
       # open_browser(lv)
 
@@ -42,9 +42,10 @@ defmodule BudgieWeb.BudgetListLiveTest do
 
       form = element(lv, "#create-budget-modal form")
 
-      html = render_change(form, %{
-        "budget" => %{"name" => ""}
-      })
+      html =
+        render_change(form, %{
+          "budget" => %{"name" => ""}
+        })
 
       assert html =~ html_escape("can't be blank")
     end
@@ -55,15 +56,16 @@ defmodule BudgieWeb.BudgetListLiveTest do
 
       form = form(lv, "#create-budget-modal form")
 
-      {:ok, _lv, html} = render_submit(form, %{
-        "budget" => %{
-          "name" => "A new name",
-          "description" => "The new description",
-          "start_date" => "2025-01-01",
-          "end_date" => "2025-01-31"
-        }
-      })
-      |> follow_redirect(conn)
+      {:ok, _lv, html} =
+        render_submit(form, %{
+          "budget" => %{
+            "name" => "A new name",
+            "description" => "The new description",
+            "start_date" => "2025-01-01",
+            "end_date" => "2025-01-31"
+          }
+        })
+        |> follow_redirect(conn)
 
       assert html =~ "Budget created"
       assert html =~ "A new name"
@@ -71,10 +73,8 @@ defmodule BudgieWeb.BudgetListLiveTest do
       assert [created_budget] = Tracking.list_budgets()
       assert created_budget.name == "A new name"
       assert created_budget.description == "The new description"
-      assert create_budget.start_date == ~D[2025-01-01]
-      assert create_budget.end_date == ~D[2025-01-31]
+      assert created_budget.start_date == ~D[2025-01-01]
+      assert created_budget.end_date == ~D[2025-01-31]
     end
-
   end
-
 end

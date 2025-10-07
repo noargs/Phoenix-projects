@@ -60,6 +60,13 @@ Argon2.gen_salt(salt_len \\ 16)
 Argon2.hash_password("secure_password123")  
 Argon2.verify_password("secure_password123", hash) 
 ```      
+    
+```bash
+$ mix phx.gen.schema Tracking.BudgetTransaction budget_transactions budget_id:references:budgets effective_date:date type:enum:funding:spending amount:decimal description:text
+
+# after fixing `Tracking.BudgetTransaction` schema/migration, run:
+$ mix ecto.migrate
+```    
 
 > [!NOTE]    
 > If you use [`argon2id_elixir`](https://hexdocs.pm/argon2id_elixir/Argon2.html) library which doesn't have equavalent of `no_user_verify()`, Which is a dummy verify function to help prevent user enumeration. It is intended to make it more difficult for any potential attacker to find valid usernames by using timing attacks. 
