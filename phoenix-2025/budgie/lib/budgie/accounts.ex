@@ -176,7 +176,9 @@ defmodule Budgie.Accounts do
 
   @doc """
   Returns an `%Ecto.Changeset{}` for changing a user's name.
+
   ## Examples
+
   iex > change_user_name(user)
   %Ecto.Changeset{data: %User{}}
   """

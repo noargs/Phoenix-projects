@@ -597,6 +597,110 @@ defmodule BudgieWeb.CoreComponents do
     """
   end
 
+  @doc """
+  Renders a dropdown menu that can be toggled by clicking on the button.
+
+  Supports escape key to close the menu.
+
+  Presents as a button with three vertical dots.
+
+  ## Examples
+
+  <.dropdown_menu id="menu">
+    <.link
+      navigate="/edit"
+      class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+    >
+      <.icon name="hero-pencil" class="w-4 h-4" />Edit
+    </.link>
+    <button
+      type="button"
+      class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+    >
+      <.icon name="hero-trash" class="w-4 h-4" /> Delete
+    </button>
+  </.dropdown_menu>
+  """
+
+  attr :id, :string, required: true
+
+  slot :inner_block, required: true
+
+  def dropdown_menu(assigns) do
+    ~H"""
+    <div
+      id={"dropdown-#{@id}"}
+      class="relative"
+      phx-window-keydown={hide("#dropdown-#{@id}-body")}
+      phx-key="escape"
+      phx-click-away={hide("#dropdown-#{@id}-body")}
+    >
+      <button
+        type="button"
+        phx-click={toggle("#dropdown-#{@id}-body")}
+        class="p-2 hover:bg-gray-100 rounded-full text-gray-500"
+      >
+        <.icon name="hero-ellipsis-vertical" class="h-6 w-6" />
+      </button>
+      <div
+        id={"dropdown-#{@id}-body"}
+        class="hidden absolute left-0 top-12 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10"
+      >
+        <div class="py-1">
+          {render_slot(@inner_block)}
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders a transaction amount as a currency value, considering the type of the transaction.
+
+  ## Example
+
+  <.transaction_amount transaction={%BudgetTransaction{type: :spending, amount: Decimal.new("24.05")}} />
+
+  Output:
+  <span class="tabular-nums text-red-500">-24.05</span>
+  """
+
+  attr :transaction, Budgie.Tracking.BudgetTransaction, required: true
+
+  def transaction_amount(%{transaction: %{type: :spending, amount: amount}}),
+    do: currency(%{amount: Decimal.negate(amount)})
+
+  def transaction_amount(%{transaction: %{type: :funding, amount: amount}}),
+    do: currency(%{amount: amount})
+
+  @doc """
+  Renders a currency amount field.
+
+  ## Example
+
+  <.currency amount={Decimal.new("246.01")} />
+
+  Output:
+  <span class="tabular-nums text-green-500">246.01</span>
+  """
+  attr :amount, Decimal, required: true
+  attr :class, :string, default: nil
+  attr :positive_class, :string, default: "text-green-500"
+  attr :negative_class, :string, default: "text-red-500"
+
+  def currency(assigns) do
+    ~H"""
+    <span class={[
+      "tabular-nums",
+      Decimal.gte?(@amount, 0) && @positive_class,
+      Decimal.lt?(@amount, 0) && @negative_class,
+      @class
+    ]}>
+      {Decimal.round(@amount, 2)}
+    </span>
+    """
+  end
+
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do
@@ -615,6 +719,21 @@ defmodule BudgieWeb.CoreComponents do
       to: selector,
       time: 200,
       transition:
+        {"transition-all transform ease-in duration-200",
+         "opacity-100 translate-y-0 sm:scale-100",
+         "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
+    )
+  end
+
+  def toggle(js \\ %JS{}, selector) do
+    JS.toggle(js,
+      to: selector,
+      time: 200,
+      in:
+        {"transition-all transform ease-out duration-300",
+         "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
+         "opacity-100 translate-y-0 sm:scale-100"},
+      out:
         {"transition-all transform ease-in duration-200",
          "opacity-100 translate-y-0 sm:scale-100",
          "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
