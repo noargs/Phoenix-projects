@@ -49,6 +49,8 @@ defmodule PentoWeb.ProductLive.Index do
           </.link>
         </:action>
       </.table>
+      <%!-- <.header>[Inspect code] lib/live/product_live/index.ex:</.header>
+      <pre><%= inspect assigns, pretty: true %></pre> --%>
     </Layouts.app>
     """
   end

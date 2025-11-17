@@ -39,6 +39,73 @@ defmodule PentoWeb.CoreComponents do
 
   alias Phoenix.LiveView.JS
 
+
+  # Phoenix 1.7: in favor of the new version with actions slot
+  attr :for, :any, required: true
+  attr :as, :any
+  attr :rest, :global, include: ~w(id action method)
+
+  slot :inner_block, required: true
+
+  def simple_form(assigns) do
+    ~H"""
+    <.form :let={f} for={@for} as={@as} {@rest} class="space-y-6">
+      <div class="space-y-4">
+        <%= render_slot(@inner_block, f) %>
+      </div>
+
+      <div class="flex items-center justify-between pt-4">
+        <%= if Phoenix.Component.has_slot?(@inner_block, :actions) do %>
+          <div>
+            <%= render_slot(@inner_block[:actions], f) %>
+          </div>
+        <% end %>
+      </div>
+    </.form>
+    """
+  end
+
+  # Deprecated form wrapper with actions slot
+  # attr :for, :any, required: true
+  # attr :as, :any
+  # attr :rest, :global, include: ~w(id action method)
+  # slot :inner_block, required: true
+  # slot :actions
+
+  # def simple_form(assigns) do
+  #   ~H"""
+  #   <.form :let={f} for={@for} as={@as} {@rest} class="space-y-6">
+  #     <div class="space-y-4">
+  #       <%= render_slot(@inner_block, f) %>
+  #     </div>
+
+  #     <div class="flex items-center justify-end gap-3">
+  #       <%= for action <- @actions do %>
+  #         <%= render_slot(action, f) %>
+  #       <% end %>
+  #     </div>
+  #   </.form>
+  #   """
+  # end
+
+    attr :for, :string, default: nil
+    attr :class, :string, default: nil
+    slot :inner_block, required: true
+
+    def label(assigns) do
+      ~H"""
+      <label
+        for={@for}
+        class={[
+          "block text-sm font-medium leading-6 text-zinc-900",
+          @class
+        ]}
+      >
+        <%= render_slot(@inner_block) %>
+      </label>
+      """
+    end
+
   @doc """
   Renders flash notices.
 
@@ -268,7 +335,7 @@ defmodule PentoWeb.CoreComponents do
   end
 
   # Helper used by inputs to generate form errors
-  defp error(assigns) do
+  def error(assigns) do
     ~H"""
     <p class="mt-1.5 flex gap-2 items-center text-sm text-error">
       <.icon name="hero-exclamation-circle-mini" class="size-5" />
